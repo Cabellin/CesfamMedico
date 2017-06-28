@@ -9,13 +9,13 @@ import javax.persistence.metamodel.StaticMetamodel;
 import pojos.MedicamentoPartida;
 import pojos.Proveedor;
 
-@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2017-06-15T18:42:45")
+@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2017-06-28T05:09:39")
 @StaticMetamodel(Partida.class)
 public class Partida_ { 
 
+    public static volatile SingularAttribute<Partida, BigDecimal> id;
     public static volatile SingularAttribute<Partida, Proveedor> proveedorId;
     public static volatile SingularAttribute<Partida, Date> fechaEntrega;
-    public static volatile SingularAttribute<Partida, BigDecimal> id;
     public static volatile ListAttribute<Partida, MedicamentoPartida> medicamentoPartidaList;
 
 }
