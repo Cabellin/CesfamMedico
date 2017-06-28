@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Historial de recetas</title>
+        <f:event type="preRenderView" listener="#{usuarioBean.verificarSesion()}"/>
+    </h:head>
+    <h:body style="background-image: url('../resources/images/fondo-01.jpg');">
+        <center>             
+            <!--<ui:include src="includes/menu.xhtml"/>  Para incluir el menu -->
+
+            <h1>Historial de recetas</h1>
+
+            <h:form id="form">
+
+                <p:dataTable id="recetas" var="r" value="#{recetaBean.recetasPaciente}" paginator="true" rows="10" emptyMessage="No se encuentran recetas de este paciente" style="margin-bottom:20px">
+                    
+
+                    <p:column headerText="Fecha" >
+                        <h:outputText value="#{r.fecha}"/>
+                    </p:column>
+
+                </p:dataTable>
+
+            </h:form>
+        </center>
+    </h:body>
+</html>
+

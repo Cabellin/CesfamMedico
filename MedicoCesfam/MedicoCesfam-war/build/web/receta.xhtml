@@ -1,0 +1,157 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Prescripción de Receta</title>
+        <f:event type="preRenderView" listener="#{usuarioBean.verificarSesion()}"/>
+    </h:head>
+    <h:body style="background-image: url('../resources/images/fondo-01.jpg');">
+        <center>
+            <h1>Prescripción de Receta</h1>
+            <h:form id="form">
+                <p:messages id="mensaje" autoUpdate="false"/>
+                <p:panel id="Registrar" style="margin-top: 20px ;height:680px; width: 800px;">
+                    <h:panelGrid columns="2" cellpadding="5" style="margin-bottom:10px" columnClasses="label, value">
+                        <h:outputText value="Rut Paciente:" />
+                        <p:inputText value="#{recetaBean.paciente.rut}-#{recetaBean.paciente.dv}"  readonly="true"/>
+
+                        <h:outputText value="Nombre Paciente:" />
+                        <p:inputText value="#{recetaBean.paciente.nombres} #{recetaBean.paciente.apellidoPat} #{recetaBean.paciente.apellidoMat}" style="width: 400px"  readonly="true"/>
+
+                    </h:panelGrid>
+
+                    <p:fieldset id="medicamentosDisponiblesField" legend="Medicamentos">
+                        <p:dataTable id="medicamentosDisponibles" var="m" value="#{recetaBean.medicamentosBd}" paginator="true" rows="10" emptyMessage="No se han encontrado medicamentos">
+                            <p:column style="width:20px">
+                                <h:outputText id="dragIcon" styleClass="ui-icon ui-icon-arrow-4" />
+                                <p:draggable for="dragIcon" revert="true" helper="clone"/>
+                            </p:column>
+
+                            <p:column headerText="Nombre Genérico">
+                                <h:outputText value="#{m.nomGenericoId}" />
+                            </p:column>
+                            
+                            <p:column headerText="Nombre Comercial">
+                                <h:outputText value="#{m.nomComercial}" />
+                            </p:column>
+                            
+                            <p:column headerText="Stock Disponible">
+                                <h:outputText value="#{m.stockDisponible}" />
+                            </p:column>
+                        </p:dataTable>
+                    </p:fieldset>
+
+                    <p:fieldset id="medSeleccionadosField" legend="Medicamentos Seleccionados" style="margin-top:20px">
+                        <p:outputPanel id="dropArea">
+                            <h:outputText value="!!!Suelte aquí los medicamentos!!!" rendered="#{empty recetaBean.seleccionados}" style="font-size:24px;" />
+                            <p:dataTable id="MedSeleccionadosTable" var="rm" value="#{recetaBean.seleccionados}" editable="true" editMode="cell" widgetVar="cellMp" rendered="#{not empty recetaBean.seleccionados}">
+
+                                <p:ajax event="cellEdit" />
+
+                                <p:column style="width:34px">
+                                    <p:commandButton id="eliminar" action='#{recetaBean.quitarMedicamento(rm)}' update=":form" icon="ui-icon-closethick" />
+                                    <p:tooltip for="eliminar" value="Quitar" position="right"/>
+                                </p:column>
+
+                                <p:column headerText="Nombre Comercial">
+                                    <h:outputText value="#{rm.medicamento.nomComercial}" />
+                                </p:column>
+
+                                <p:column headerText="Nombre Genérico">
+                                    <h:outputText value="#{rm.medicamento.nomGenericoId}" />
+                                </p:column>
+
+                                <p:column headerText="Cantidad">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{rm.cantidad}" /></f:facet>
+                                        <f:facet name="input"><p:inputText value="#{rm.cantidad}" style="width:96%" label="Cantidad" maxlength="2" onkeypress="return justNumbers(event);"/></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+
+                                <p:column headerText="Cada">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{rm.periodicidad}" /></f:facet>
+                                        <f:facet name="input"><p:inputText value="#{rm.periodicidad}" style="width:96%" label="Cantidad" maxlength="2" onkeypress="return justNumbers(event);"/></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+
+                                <p:column headerText="Unidad">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{rm.unidadP}" /></f:facet>
+                                        <f:facet name="input">
+                                            <h:selectOneMenu value="#{rm.unidadP}" style="width:96%" >
+                                                <f:selectItems value="#{recetaBean.unidadesP}" var="u" itemLabel="#{u}" itemValue="#{u}" />
+                                            </h:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+
+                                <p:column headerText="Por">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{rm.extension}" /></f:facet>
+                                        <f:facet name="input"><p:inputText value="#{rm.extension}" style="width:96%" label="Cantidad" maxlength="2" onkeypress="return justNumbers(event);"/></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+
+                                <p:column headerText="Unidad">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{rm.unidadE}" /></f:facet>
+                                        <f:facet name="input">
+                                            <h:selectOneMenu value="#{rm.unidadE}" style="width:96%" >
+                                                <f:selectItems value="#{recetaBean.unidadesE}" var="u" itemLabel="#{u}" itemValue="#{u}" />
+                                            </h:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                            </p:dataTable>
+                        </p:outputPanel>
+                    </p:fieldset>
+
+
+                    <p:droppable for="medSeleccionadosField" tolerance="touch" activeStyleClass="ui-state-highlight" datasource="medicamentosDisponibles" onDrop="handleDrop" >
+                        <p:ajax listener="#{recetaBean.onDrop}" update="dropArea medicamentosDisponibles" />
+                    </p:droppable>
+
+                    <br/>
+                    <br/>
+                    <br/>
+                    <p:commandButton value="Cancelar" action="index?faces-redirect=true"/> &nbsp;&nbsp;&nbsp;
+                    <p:commandButton value="Emitir Receta" update="mensaje" action="#{recetaBean.crearReceta()}" ajax="false"/>
+                </p:panel>
+
+            </h:form>
+        </center>
+
+    </h:body>
+    <script type="text/javascript">
+
+        function bloqueo(e)
+        {
+            var tecla = window.event ? window.event.keyCode : e.which;
+            if (tecla == 8)
+                return true;
+
+            patron = /\w/; // 4
+            te = String.fromCharCode(tecla); // 5
+            return patron.test(te);
+
+        }
+
+    </script>
+
+    <script type="text/javascript">
+        function handleDrop(event, ui) {
+            var droppedCar = ui.draggable;
+
+            droppedCar.fadeOut('fast');
+        }
+    </script>
+    <h:outputScript name="js/spanishLocale.js" />
+
+</html>
+
+
