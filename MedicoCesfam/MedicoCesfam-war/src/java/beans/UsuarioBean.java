@@ -9,6 +9,7 @@ import java.io.IOException;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
@@ -22,6 +23,8 @@ import pojos.Usuario;
 import services.UsuarioFacadeLocal;
 import pojos.Funcionario;
 import services.FuncionarioFacadeLocal;
+import java.security.*;
+import org.apache.commons.codec.digest.DigestUtils;
 
 /**
  *
@@ -129,11 +132,12 @@ public class UsuarioBean implements Serializable {
         return funcionarioFacade.find(rut);
     }
     
-     public void login(ActionEvent event) {
+    public void login(ActionEvent event) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         RequestContext context = RequestContext.getCurrentInstance();
         FacesMessage message = null;
         Usuario u = usuarioFacade.find(nomUsu);
-        //contrasena = DigestUtils.md5Hex(contrasena);
+        contrasena = DigestUtils.md5Hex(contrasena);
+
 
         if (u != null && contrasena != null && contrasena.equals(u.getContrasena()) && u.getFuncionarioRut().getTipoFuncId().getId().intValueExact() == 1) {
             loggedIn = true;
@@ -147,9 +151,10 @@ public class UsuarioBean implements Serializable {
             message = new FacesMessage(FacesMessage.SEVERITY_WARN, "Error " + "Nombre de usuario o clave no válida", "");
             FacesContext.getCurrentInstance().addMessage(null, message);
             context.addCallbackParam("view", "faces/logueo.xhtml");
-            
+
         }
     }
+     
      
     public boolean verificarSesionMenu() {
         FacesContext context = FacesContext.getCurrentInstance();
