@@ -9,14 +9,14 @@ import pojos.Medicamento;
 import pojos.MedicamentoPartidaPK;
 import pojos.Partida;
 
-@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2017-06-28T05:09:39")
+@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2017-07-04T19:49:50")
 @StaticMetamodel(MedicamentoPartida.class)
 public class MedicamentoPartida_ { 
 
-    public static volatile SingularAttribute<MedicamentoPartida, Medicamento> medicamento;
     public static volatile SingularAttribute<MedicamentoPartida, Date> fechaVencimiento;
+    public static volatile SingularAttribute<MedicamentoPartida, Medicamento> medicamento;
     public static volatile SingularAttribute<MedicamentoPartida, BigInteger> cantidad;
-    public static volatile SingularAttribute<MedicamentoPartida, Partida> partida;
     public static volatile SingularAttribute<MedicamentoPartida, MedicamentoPartidaPK> medicamentoPartidaPK;
+    public static volatile SingularAttribute<MedicamentoPartida, Partida> partida;
 
 }
