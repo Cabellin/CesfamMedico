@@ -6,7 +6,7 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
     <h:head>
-        <title>Inicio</title>
+        <title>CESFAM - Inicio</title>
         <f:event type="preRenderView" listener="#{usuarioBean.verificarSesion()}"/>
         <link rel="icon" type="image/png" href="../resources/images/favicon.png" />
     </h:head>
@@ -55,11 +55,6 @@
                             <f:setPropertyActionListener value="#{p}" target="#{pacienteBean.paciente}" />
                         </p:commandButton>
                         <p:tooltip for="datosPaciente" value="Ver datos del paciente" position="left"/>
-                    </p:column>
-
-                    <p:column style="width:34px">
-                        <p:commandButton id="recetas" icon="ui-icon-search" action="#{recetaBean.verRecetas(p)}"/>
-                        <p:tooltip for="recetas" value="Ver historial de recetas" position="left"/>
                     </p:column>
 
                     <p:column style="width:34px">
