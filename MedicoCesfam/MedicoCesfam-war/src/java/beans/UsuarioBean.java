@@ -25,10 +25,8 @@ import services.UsuarioFacadeLocal;
 import pojos.Funcionario;
 import services.FuncionarioFacadeLocal;
 import java.security.*;
-<<<<<<< HEAD
-=======
 import org.apache.commons.codec.digest.DigestUtils;
->>>>>>> f0d90f2df0597d1c72fcbf75f4f40f600d959699
+
 
 /**
  *
@@ -134,11 +132,7 @@ public class UsuarioBean implements Serializable {
     public Funcionario buscarEsteFuncionario() {
         return funcionarioFacade.find(rut);
     }
-<<<<<<< HEAD
 
-=======
-    
->>>>>>> f0d90f2df0597d1c72fcbf75f4f40f600d959699
     public void login(ActionEvent event) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         RequestContext context = RequestContext.getCurrentInstance();
         FacesMessage message = null;
@@ -161,12 +155,7 @@ public class UsuarioBean implements Serializable {
 
         }
     }
-<<<<<<< HEAD
 
-=======
-     
-     
->>>>>>> f0d90f2df0597d1c72fcbf75f4f40f600d959699
     public boolean verificarSesionMenu() {
         FacesContext context = FacesContext.getCurrentInstance();
         Usuario u1 = (Usuario) context.getExternalContext().getSessionMap().get("usuario");
