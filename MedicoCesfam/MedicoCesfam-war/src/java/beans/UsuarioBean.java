@@ -142,7 +142,7 @@ public class UsuarioBean implements Serializable {
 
         if (u != null && contrasena != null && contrasena.equals(u.getContrasena()) && u.getFuncionarioRut().getTipoFuncId().getId().intValueExact() == 1) {
             loggedIn = true;
-            message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Bienvenido Dr." + u.getFuncionarioRut().getNombres() + " " + u.getFuncionarioRut().getApellidoPat(), "");
+            message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Bienvenido Dr. " + u.getFuncionarioRut().getNombres() + " " + u.getFuncionarioRut().getApellidoPat(), "");
             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("usuario", u);
             FacesContext.getCurrentInstance().addMessage(null, message);
             context.addCallbackParam("loggedIn", loggedIn);

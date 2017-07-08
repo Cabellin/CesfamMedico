@@ -8,6 +8,7 @@ package beans;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -68,7 +69,7 @@ public class RecetaBean implements Serializable {
     public void setFiltrado(List<Medicamento> filtrado) {
         this.filtrado = filtrado;
     }
-    
+
     public RecetaMedicamento getRecmed() {
         return recmed;
     }
@@ -119,6 +120,7 @@ public class RecetaBean implements Serializable {
 
     public List<String> getUnidadesP() {
         ArrayList<String> u = new ArrayList<String>();
+        u.add("Seleccione");
         u.add("Minutos");
         u.add("Horas");
         u.add("Días");
@@ -127,6 +129,7 @@ public class RecetaBean implements Serializable {
 
     public List<String> getUnidadesE() {
         ArrayList<String> u = new ArrayList<String>();
+        u.add("Seleccione");
         u.add("Días");
         u.add("Semanas");
         u.add("Meses");
@@ -138,7 +141,6 @@ public class RecetaBean implements Serializable {
 //        List<Receta> recetas = recetaFacade.findByPaciente(paciente);
 //        return recetas;
 //    }
-    
     public String agregarReceta(Paciente p) {
         paciente = p;
         return "receta?faces-redirect=true";
@@ -174,8 +176,51 @@ public class RecetaBean implements Serializable {
         seleccionados.remove(rm);
     }
 
+    public void verificarUnidadP() throws Exception {
+        for (RecetaMedicamento temp : seleccionados) {
+            if (temp.getUnidadP().equals("Seleccione") || temp.getUnidadP() == null || temp.getUnidadP().equals("")) {
+                throw new Exception("Verificar unidad de Periodicidad");
+            }
+        }
+    }
+
+    public void verificarUnidadE() throws Exception {
+        for (RecetaMedicamento temp : seleccionados) {
+            if (temp.getUnidadE().equals("Seleccione") || temp.getUnidadE() == null || temp.getUnidadE().equals("")) {
+                throw new Exception("Verificar unidad de Extensión");
+            }
+        }
+    }
+
+    public void verificarCantidad() throws Exception {
+        for (RecetaMedicamento temp : seleccionados) {
+            if (temp.getCantidad() == BigInteger.ZERO) {
+                throw new Exception("Verificar cantidad de días");
+            }
+        }
+    }
+
+    public void verificarCantidadT() throws Exception {
+        for (RecetaMedicamento temp : seleccionados) {
+            if (temp.getCantTotal() == BigInteger.ZERO) {
+                throw new Exception("Verificar cantidad de medicamentos");
+            }
+        }
+    }
+
+    public void verificarMedicamento() throws Exception {
+        if (seleccionados.isEmpty()) {
+            throw new Exception("Debe seleccionar medicamento");
+        }
+    }
+
     public String crearReceta() {
         try {
+            verificarCantidadT();
+            verificarCantidad();
+            verificarUnidadE();
+            verificarUnidadP();
+            verificarMedicamento();
             Receta r = new Receta();
             r.setFecha(new Date());
             r.setHora(new Date());
@@ -188,20 +233,24 @@ public class RecetaBean implements Serializable {
             medicamento = new Medicamento();
             return "partida";
         } catch (Exception e) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Debe editar los datos de los compuestos", ""));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Debe editar los datos de la receta", ""));
             return "PasoDos";
         }
     }
-    
-    public String Color(){
-//        Medicamento m = medicamentoFacade.find(medicamento.getCodigo());
-//        int stock = Integer.parseInt(m.getStockDisponible().toString());
-//        if(stock == 0){
-//           return "27FF00";
-//        } else {
-//           return "FF0000"; 
-//        }
-//        
-        return "";
+
+    boolean color = false;
+
+    public String Color(Medicamento m) {
+        Medicamento med = medicamentoFacade.find(m.getCodigo());
+        if (med.getStockDisponible() == BigInteger.ZERO) {
+            color = true;
+        } else {
+            color = false;
+        }
+        if (color) {
+            return "#FF0000";
+        } else {
+            return "#27FF00";
+        }
     }
 }
