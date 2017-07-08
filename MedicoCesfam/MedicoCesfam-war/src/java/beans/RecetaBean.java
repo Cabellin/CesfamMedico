@@ -5,6 +5,8 @@
  */
 package beans;
 
+
+
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
@@ -26,8 +28,10 @@ import pojos.Medicamento;
 import pojos.Paciente;
 import pojos.RecetaMedicamento;
 import pojos.RecetaMedicamentoPK;
+import pojos.Usuario;
 import services.MedicamentoFacadeLocal;
 import services.PacienteFacadeLocal;
+import services.UsuarioFacadeLocal;
 
 /**
  *
@@ -46,6 +50,9 @@ public class RecetaBean implements Serializable {
 
     @EJB
     private RecetaFacadeLocal recetaFacade;
+    
+    @EJB
+    private UsuarioFacadeLocal usuarioFacade;
 
     private Receta receta;
     private Paciente paciente;
@@ -136,6 +143,17 @@ public class RecetaBean implements Serializable {
         u.add("Años");
         return u;
     }
+    
+    public List<String> getUnidadesC() {
+        ArrayList<String> u = new ArrayList<String>();
+        u.add("Seleccione");
+        u.add("mg");
+        u.add("gr");
+        u.add("ml");
+        u.add("lt");
+        u.add("ui");
+        return u;
+    }
 
 //    public List<Receta> getRecetasPaciente(){
 //        List<Receta> recetas = recetaFacade.findByPaciente(paciente);
@@ -143,6 +161,10 @@ public class RecetaBean implements Serializable {
 //    }
     public String agregarReceta(Paciente p) {
         paciente = p;
+        receta.setId(obtenerId());
+        FacesContext context = FacesContext.getCurrentInstance();
+        Usuario u = (Usuario) context.getExternalContext().getSessionMap().get("usuario");
+        receta.setUsuarioNomUsu(usuarioFacade.find(u.getNomUsu()));
         return "receta?faces-redirect=true";
     }
 
@@ -151,21 +173,22 @@ public class RecetaBean implements Serializable {
         return "controlPaciente?faces-redirect=true";
     }
 
-    private BigInteger obtenerId() {
-        BigInteger id;
+    private BigDecimal obtenerId() {
+        BigDecimal id;
         String idS;
         Date now = new Date();
         SimpleDateFormat ft = new SimpleDateFormat("yyyyMMddHHmmss");
         idS = ft.format(now);
-        id = BigInteger.valueOf(Long.parseLong(idS));
+        id = BigDecimal.valueOf(Long.parseLong(idS));
         return id;
     }
 
     public void onDrop(DragDropEvent ddEvent) {
         Medicamento m = ((Medicamento) ddEvent.getData());
-        //receta.setId(BigDecimal.valueOf(obtenerId().longValue()));
-        RecetaMedicamento rm = new RecetaMedicamento();
+        RecetaMedicamento rm = new RecetaMedicamento(new RecetaMedicamentoPK(m.getCodigo(), BigInteger.valueOf(receta.getId().longValue())), null, null, null, null, null, null, BigInteger.ZERO);
+//        RecetaMedicamento rm = new RecetaMedicamento();
         rm.setMedicamento(m);
+        rm.setReceta(receta);
 
         seleccionados.add(rm);
         medicamentosBd.remove(m);
@@ -178,15 +201,23 @@ public class RecetaBean implements Serializable {
 
     public void verificarUnidadP() throws Exception {
         for (RecetaMedicamento temp : seleccionados) {
-            if (temp.getUnidadP().equals("Seleccione") || temp.getUnidadP() == null || temp.getUnidadP().equals("")) {
+            if (temp.getUnidadP() == null || temp.getUnidadP().equals("Seleccione") || temp.getUnidadP().equals("")) {
                 throw new Exception("Verificar unidad de Periodicidad");
             }
         }
     }
 
+    public void verificarUnidadC() throws Exception {
+        for (RecetaMedicamento temp : seleccionados) {
+            if (temp.getUnidadC() == null || temp.getUnidadC().equals("Seleccione") || temp.getUnidadC().equals("")) {
+                throw new Exception("Verificar unidad de Cantidad");
+            }
+        }
+    }
+    
     public void verificarUnidadE() throws Exception {
         for (RecetaMedicamento temp : seleccionados) {
-            if (temp.getUnidadE().equals("Seleccione") || temp.getUnidadE() == null || temp.getUnidadE().equals("")) {
+            if (temp.getUnidadE() == null || temp.getUnidadE().equals("Seleccione") || temp.getUnidadE().equals("")) {
                 throw new Exception("Verificar unidad de Extensión");
             }
         }
@@ -194,16 +225,24 @@ public class RecetaBean implements Serializable {
 
     public void verificarCantidad() throws Exception {
         for (RecetaMedicamento temp : seleccionados) {
-            if (temp.getCantidad() == BigInteger.ZERO) {
-                throw new Exception("Verificar cantidad de días");
+            if (temp.getCantidad() == null || temp.getCantidad().intValue() == 0) {
+                throw new Exception("Verificar cantidad");
             }
         }
     }
 
-    public void verificarCantidadT() throws Exception {
+    public void verificarPeriodicidad() throws Exception {
         for (RecetaMedicamento temp : seleccionados) {
-            if (temp.getCantTotal() == BigInteger.ZERO) {
-                throw new Exception("Verificar cantidad de medicamentos");
+            if (temp.getPeriodicidad() == null || temp.getPeriodicidad().intValue() == 0) {
+                throw new Exception("Verificar periodicidad");
+            }
+        }
+    }
+
+    public void verificarExtension() throws Exception {
+        for (RecetaMedicamento temp : seleccionados) {
+            if (temp.getExtension() == null || temp.getExtension().intValue() == 0) {
+                throw new Exception("Verificar extesión");
             }
         }
     }
@@ -216,25 +255,28 @@ public class RecetaBean implements Serializable {
 
     public String crearReceta() {
         try {
-            verificarCantidadT();
-            verificarCantidad();
-            verificarUnidadE();
-            verificarUnidadP();
             verificarMedicamento();
+            verificarCantidad();
+            verificarUnidadC();
+            verificarPeriodicidad();
+            verificarUnidadP();
+            verificarExtension();
+            verificarUnidadE();
             Receta r = new Receta();
+            r.setId(BigDecimal.valueOf(receta.getId().longValue()));
             r.setFecha(new Date());
             r.setHora(new Date());
             r.setEstado("Pendiente");
-            r.setPacienteRut(receta.getPacienteRut());
+            r.setPacienteRut(pacienteFacade.find(paciente.getRut()));
             r.setUsuarioNomUsu(receta.getUsuarioNomUsu());
             r.setRecetaMedicamentoList(seleccionados);
             this.recetaFacade.create(r);
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Medicamento Agregado exitosamente!!!"));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Receta Agregada exitosamente!!!"));
             medicamento = new Medicamento();
-            return "partida";
+            return "index?faces-redirect=true";
         } catch (Exception e) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Debe editar los datos de la receta", ""));
-            return "PasoDos";
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Error: " + e.getMessage(), ""));
+            return "receta";
         }
     }
 
@@ -250,7 +292,7 @@ public class RecetaBean implements Serializable {
         if (color) {
             return "#FF0000";
         } else {
-            return "#27FF00";
+            return "#056A28";
         }
     }
 }
