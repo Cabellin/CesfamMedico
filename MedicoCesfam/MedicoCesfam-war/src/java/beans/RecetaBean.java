@@ -68,8 +68,6 @@ public class RecetaBean implements Serializable {
     public void setFiltrado(List<Medicamento> filtrado) {
         this.filtrado = filtrado;
     }
-
-    
     
     public RecetaMedicamento getRecmed() {
         return recmed;
@@ -193,5 +191,17 @@ public class RecetaBean implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Debe editar los datos de los compuestos", ""));
             return "PasoDos";
         }
+    }
+    
+    public String Color(){
+//        Medicamento m = medicamentoFacade.find(medicamento.getCodigo());
+//        int stock = Integer.parseInt(m.getStockDisponible().toString());
+//        if(stock == 0){
+//           return "27FF00";
+//        } else {
+//           return "FF0000"; 
+//        }
+//        
+        return "";
     }
 }

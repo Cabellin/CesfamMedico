@@ -27,13 +27,6 @@
                 <p:messages id="mensaje" autoUpdate="false"/>
 
                 <p:dataTable id="pacientes" var="p" value="#{pacienteBean.pacientes}"  widgetVar="filtro" paginator="true" rows="10" emptyMessage="No se encuentran medicamentos en la Base de Datos" filteredValue="#{pacienteBean.filtrados}" style="margin-bottom:20px">
-                    <f:facet name="header">
-                        <p:outputPanel>
-                            <h:outputText value="Buscador: " /> &nbsp;&nbsp; 
-                            <p:inputText id="globalFilter" onkeyup="PF('filtro').filter()" style="width:185px" placeholder="Ingrese su búsqueda"/>
-                        </p:outputPanel>
-                    </f:facet>
-
                     <p:column headerText="Rut" filterBy="#{p.rut}-#{p.dv}" filterMatchMode="contains">
                         <h:outputText value="#{p.rut}-#{p.dv}"/>
                     </p:column>
