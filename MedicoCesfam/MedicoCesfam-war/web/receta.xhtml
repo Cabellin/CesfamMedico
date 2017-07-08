@@ -29,13 +29,13 @@
                     <br/>
                     
                     <p:fieldset id="medicamentosDisponiblesField" legend="Medicamentos" style="max-width: 1100px">
-                        <p:dataTable id="medicamentosDisponibles" var="m" value="#{recetaBean.medicamentosBd}" paginator="true" rows="10" emptyMessage="No se han encontrado medicamentos">
+                        <p:dataTable id="medicamentosDisponibles" var="m" value="#{recetaBean.medicamentosBd}" filteredValue="#{recetaBean.filtrado}" paginator="true" rows="10" emptyMessage="No se han encontrado medicamentos">
                             <p:column style="width:20px">
                                 <h:outputText id="dragIcon" styleClass="ui-icon ui-icon-arrow-4" />
                                 <p:draggable for="dragIcon" revert="true" helper="clone"/>
                             </p:column>
 
-                            <p:column headerText="Nombre Genérico">
+                            <p:column headerText="Nombre Genérico" filterBy="#{m.nomGenericoId.descripcion}" filterMatchMode="contains">
                                 <h:outputText value="#{m.nomGenericoId.descripcion}" />
                             </p:column>
                             

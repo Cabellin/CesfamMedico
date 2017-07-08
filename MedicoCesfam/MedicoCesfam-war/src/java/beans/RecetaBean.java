@@ -52,6 +52,7 @@ public class RecetaBean implements Serializable {
     private RecetaMedicamento recmed;
     private List<RecetaMedicamento> seleccionados;
     private List<Medicamento> medicamentosBd;
+    private List<Medicamento> filtrado;
 
     public RecetaBean() {
         paciente = new Paciente();
@@ -60,6 +61,16 @@ public class RecetaBean implements Serializable {
         medicamentosBd = new ArrayList<Medicamento>();
     }
 
+    public List<Medicamento> getFiltrado() {
+        return filtrado;
+    }
+
+    public void setFiltrado(List<Medicamento> filtrado) {
+        this.filtrado = filtrado;
+    }
+
+    
+    
     public RecetaMedicamento getRecmed() {
         return recmed;
     }
