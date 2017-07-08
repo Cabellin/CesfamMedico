@@ -14,9 +14,10 @@
         <center>
             <h1>Prescripción de Receta</h1>
             <h:form id="form">
-                <p:messages id="mensaje" autoUpdate="false"/>
-                <p:panel id="Registrar" style="margin-top: 20px ;height:680px; width: 800px;">
+                <p:panel id="Registrar" style="margin-top: 20px ;max-height: min-content; width: 1300px;">
+                    <p:messages id="mensaje" autoUpdate="false"/>
                     <h:panelGrid columns="2" cellpadding="5" style="margin-bottom:10px" columnClasses="label, value">
+                        <h:outputText/><h:outputText/><h:outputText/><h:outputText/>
                         <h:outputText value="Rut Paciente:" />
                         <p:inputText value="#{recetaBean.paciente.rut}-#{recetaBean.paciente.dv}"  readonly="true"/>
 
@@ -25,7 +26,9 @@
 
                     </h:panelGrid>
 
-                    <p:fieldset id="medicamentosDisponiblesField" legend="Medicamentos">
+                    <br/>
+                    
+                    <p:fieldset id="medicamentosDisponiblesField" legend="Medicamentos" style="max-width: 1100px">
                         <p:dataTable id="medicamentosDisponibles" var="m" value="#{recetaBean.medicamentosBd}" paginator="true" rows="10" emptyMessage="No se han encontrado medicamentos">
                             <p:column style="width:20px">
                                 <h:outputText id="dragIcon" styleClass="ui-icon ui-icon-arrow-4" />
@@ -33,7 +36,7 @@
                             </p:column>
 
                             <p:column headerText="Nombre Genérico">
-                                <h:outputText value="#{m.nomGenericoId}" />
+                                <h:outputText value="#{m.nomGenericoId.descripcion}" />
                             </p:column>
                             
                             <p:column headerText="Nombre Comercial">
@@ -46,7 +49,9 @@
                         </p:dataTable>
                     </p:fieldset>
 
-                    <p:fieldset id="medSeleccionadosField" legend="Medicamentos Seleccionados" style="margin-top:20px">
+                    <br/>
+                    
+                    <p:fieldset id="medSeleccionadosField" legend="Medicamentos Seleccionados" style="margin-top:20px; max-width: 1100px">
                         <p:outputPanel id="dropArea">
                             <h:outputText value="!!!Suelte aquí los medicamentos!!!" rendered="#{empty recetaBean.seleccionados}" style="font-size:24px;" />
                             <p:dataTable id="MedSeleccionadosTable" var="rm" value="#{recetaBean.seleccionados}" editable="true" editMode="cell" widgetVar="cellMp" rendered="#{not empty recetaBean.seleccionados}">
@@ -63,7 +68,7 @@
                                 </p:column>
 
                                 <p:column headerText="Nombre Genérico">
-                                    <h:outputText value="#{rm.medicamento.nomGenericoId}" />
+                                    <h:outputText value="#{rm.medicamento.nomGenericoId.descripcion}" />
                                 </p:column>
 
                                 <p:column headerText="Cantidad">
@@ -122,6 +127,8 @@
                     <br/>
                     <p:commandButton value="Cancelar" action="index?faces-redirect=true"/> &nbsp;&nbsp;&nbsp;
                     <p:commandButton value="Emitir Receta" update="mensaje" action="#{recetaBean.crearReceta()}" ajax="false"/>
+                    <br/>
+                    <br/>
                 </p:panel>
 
             </h:form>

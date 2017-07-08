@@ -101,7 +101,7 @@ public class RecetaBean implements Serializable {
     }
 
     public List<Medicamento> getMedicamentosBd() {
-        return medicamentosBd;
+        return medicamentoFacade.findAll();
     }
 
     public void setMedicamentosBd(List<Medicamento> medicamentosBd) {
