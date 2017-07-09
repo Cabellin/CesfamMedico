@@ -7,12 +7,12 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 import pojos.Medicamento;
 
-@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2017-07-09T01:45:37")
+@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2017-07-09T01:05:39")
 @StaticMetamodel(AccionFarm.class)
 public class AccionFarm_ { 
 
-    public static volatile SingularAttribute<AccionFarm, BigDecimal> id;
     public static volatile SingularAttribute<AccionFarm, String> descripcion;
     public static volatile ListAttribute<AccionFarm, Medicamento> medicamentoList;
+    public static volatile SingularAttribute<AccionFarm, BigDecimal> id;
 
 }
