@@ -7,12 +7,12 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 import pojos.Funcionario;
 
-@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2017-07-08T04:17:09")
+@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2017-07-09T01:45:37")
 @StaticMetamodel(TipoFunc.class)
 public class TipoFunc_ { 
 
+    public static volatile SingularAttribute<TipoFunc, BigDecimal> id;
     public static volatile SingularAttribute<TipoFunc, String> descripcion;
     public static volatile ListAttribute<TipoFunc, Funcionario> funcionarioList;
-    public static volatile SingularAttribute<TipoFunc, BigDecimal> id;
 
 }
