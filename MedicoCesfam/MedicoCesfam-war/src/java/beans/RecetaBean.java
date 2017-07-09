@@ -273,7 +273,13 @@ public class RecetaBean implements Serializable {
             this.recetaFacade.create(r);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Receta Agregada exitosamente!!!"));
             medicamento = new Medicamento();
+<<<<<<< HEAD
             return "index";
+=======
+            seleccionados = null;
+            medicamentosBd = medicamentoFacade.findAll();
+            return "index?faces-redirect=true";
+>>>>>>> c79516c39739b6f656ad0571d0f248d98cbd4dbd
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Error: " + e.getMessage(), ""));
             return "receta";
