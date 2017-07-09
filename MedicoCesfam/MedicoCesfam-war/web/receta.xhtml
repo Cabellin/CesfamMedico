@@ -136,7 +136,7 @@
                     <br/>
                     <br/>
                     <br/>
-                    <p:commandButton value="Cancelar" action="index?faces-redirect=true"/> &nbsp;&nbsp;&nbsp;
+                    <p:commandButton value="Cancelar" action="#{recetaBean.cancelar()}" ajax="false"/> &nbsp;&nbsp;&nbsp;
                     <p:commandButton value="Emitir Receta" update="mensaje" action="#{recetaBean.crearReceta()}" ajax="false"/>
                     <br/>
                     <br/>

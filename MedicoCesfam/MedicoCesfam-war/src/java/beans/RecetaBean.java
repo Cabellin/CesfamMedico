@@ -5,8 +5,6 @@
  */
 package beans;
 
-
-
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
@@ -50,7 +48,7 @@ public class RecetaBean implements Serializable {
 
     @EJB
     private RecetaFacadeLocal recetaFacade;
-    
+
     @EJB
     private UsuarioFacadeLocal usuarioFacade;
 
@@ -143,7 +141,7 @@ public class RecetaBean implements Serializable {
         u.add("Años");
         return u;
     }
-    
+
     public List<String> getUnidadesC() {
         ArrayList<String> u = new ArrayList<String>();
         u.add("Seleccione");
@@ -168,6 +166,11 @@ public class RecetaBean implements Serializable {
         return "receta?faces-redirect=true";
     }
 
+    public String cancelar(){
+        Limpiar();
+        return "index?faces-redirect=true";
+    }
+    
     public String verRecetas(Paciente p) {
         paciente = p;
         return "controlPaciente?faces-redirect=true";
@@ -214,7 +217,7 @@ public class RecetaBean implements Serializable {
             }
         }
     }
-    
+
     public void verificarUnidadE() throws Exception {
         for (RecetaMedicamento temp : seleccionados) {
             if (temp.getUnidadE() == null || temp.getUnidadE().equals("Seleccione") || temp.getUnidadE().equals("")) {
@@ -272,14 +275,18 @@ public class RecetaBean implements Serializable {
             r.setRecetaMedicamentoList(seleccionados);
             this.recetaFacade.create(r);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Receta Agregada exitosamente!!!"));
-            medicamento = new Medicamento();
-            seleccionados = null;
-            medicamentosBd = medicamentoFacade.findAll();
+            Limpiar();
             return "index?faces-redirect=true";
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Error: " + e.getMessage(), ""));
             return "receta";
         }
+    }
+
+    private void Limpiar() {
+        medicamento = new Medicamento();
+        seleccionados = new ArrayList<>();
+        medicamentosBd = medicamentoFacade.findAll();
     }
 
     boolean color = false;
