@@ -31,17 +31,27 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "RecetaMedicamento.findAll", query = "SELECT r FROM RecetaMedicamento r"),
     @NamedQuery(name = "RecetaMedicamento.findByMedicamentoCodigo", query = "SELECT r FROM RecetaMedicamento r WHERE r.recetaMedicamentoPK.medicamentoCodigo = :medicamentoCodigo"),
     @NamedQuery(name = "RecetaMedicamento.findByRecetaId", query = "SELECT r FROM RecetaMedicamento r WHERE r.recetaMedicamentoPK.recetaId = :recetaId"),
+    @NamedQuery(name = "RecetaMedicamento.findByCantidad", query = "SELECT r FROM RecetaMedicamento r WHERE r.cantidad = :cantidad"),
+    @NamedQuery(name = "RecetaMedicamento.findByUnidadC", query = "SELECT r FROM RecetaMedicamento r WHERE r.unidadC = :unidadC"),
     @NamedQuery(name = "RecetaMedicamento.findByPeriodicidad", query = "SELECT r FROM RecetaMedicamento r WHERE r.periodicidad = :periodicidad"),
     @NamedQuery(name = "RecetaMedicamento.findByUnidadP", query = "SELECT r FROM RecetaMedicamento r WHERE r.unidadP = :unidadP"),
     @NamedQuery(name = "RecetaMedicamento.findByExtension", query = "SELECT r FROM RecetaMedicamento r WHERE r.extension = :extension"),
     @NamedQuery(name = "RecetaMedicamento.findByUnidadE", query = "SELECT r FROM RecetaMedicamento r WHERE r.unidadE = :unidadE"),
-    @NamedQuery(name = "RecetaMedicamento.findByCantTotal", query = "SELECT r FROM RecetaMedicamento r WHERE r.cantTotal = :cantTotal"),
-    @NamedQuery(name = "RecetaMedicamento.findByCantidad", query = "SELECT r FROM RecetaMedicamento r WHERE r.cantidad = :cantidad")})
+    @NamedQuery(name = "RecetaMedicamento.findByCantTotal", query = "SELECT r FROM RecetaMedicamento r WHERE r.cantTotal = :cantTotal")})
 public class RecetaMedicamento implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected RecetaMedicamentoPK recetaMedicamentoPK;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "CANTIDAD")
+    private BigInteger cantidad;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 50)
+    @Column(name = "UNIDAD_C")
+    private String unidadC;
     @Basic(optional = false)
     @NotNull
     @Column(name = "PERIODICIDAD")
@@ -64,10 +74,6 @@ public class RecetaMedicamento implements Serializable {
     @NotNull
     @Column(name = "CANT_TOTAL")
     private BigInteger cantTotal;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "CANTIDAD")
-    private BigInteger cantidad;
     @JoinColumn(name = "MEDICAMENTO_CODIGO", referencedColumnName = "CODIGO", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private Medicamento medicamento;
@@ -82,14 +88,15 @@ public class RecetaMedicamento implements Serializable {
         this.recetaMedicamentoPK = recetaMedicamentoPK;
     }
 
-    public RecetaMedicamento(RecetaMedicamentoPK recetaMedicamentoPK, BigInteger periodicidad, String unidadP, BigInteger extension, String unidadE, BigInteger cantTotal, BigInteger cantidad) {
+    public RecetaMedicamento(RecetaMedicamentoPK recetaMedicamentoPK, BigInteger cantidad, String unidadC, BigInteger periodicidad, String unidadP, BigInteger extension, String unidadE, BigInteger cantTotal) {
         this.recetaMedicamentoPK = recetaMedicamentoPK;
+        this.cantidad = cantidad;
+        this.unidadC = unidadC;
         this.periodicidad = periodicidad;
         this.unidadP = unidadP;
         this.extension = extension;
         this.unidadE = unidadE;
         this.cantTotal = cantTotal;
-        this.cantidad = cantidad;
     }
 
     public RecetaMedicamento(String medicamentoCodigo, BigInteger recetaId) {
@@ -102,6 +109,22 @@ public class RecetaMedicamento implements Serializable {
 
     public void setRecetaMedicamentoPK(RecetaMedicamentoPK recetaMedicamentoPK) {
         this.recetaMedicamentoPK = recetaMedicamentoPK;
+    }
+
+    public BigInteger getCantidad() {
+        return cantidad;
+    }
+
+    public void setCantidad(BigInteger cantidad) {
+        this.cantidad = cantidad;
+    }
+
+    public String getUnidadC() {
+        return unidadC;
+    }
+
+    public void setUnidadC(String unidadC) {
+        this.unidadC = unidadC;
     }
 
     public BigInteger getPeriodicidad() {
@@ -142,14 +165,6 @@ public class RecetaMedicamento implements Serializable {
 
     public void setCantTotal(BigInteger cantTotal) {
         this.cantTotal = cantTotal;
-    }
-
-    public BigInteger getCantidad() {
-        return cantidad;
-    }
-
-    public void setCantidad(BigInteger cantidad) {
-        this.cantidad = cantidad;
     }
 
     public Medicamento getMedicamento() {

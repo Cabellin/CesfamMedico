@@ -77,6 +77,17 @@
                                         <f:facet name="input"><p:inputText value="#{rm.cantidad}" style="width:96%" label="Cantidad" maxlength="2" onkeypress="return justNumbers(event);"/></f:facet>
                                     </p:cellEditor>
                                 </p:column>
+                                
+                                <p:column headerText="Unidad">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{rm.unidadC}" /></f:facet>
+                                        <f:facet name="input">
+                                            <h:selectOneMenu value="#{rm.unidadC}" style="width:96%" >
+                                                <f:selectItems value="#{recetaBean.unidadesC}" var="u" itemLabel="#{u}" itemValue="#{u}" />
+                                            </h:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
 
                                 <p:column headerText="Cada">
                                     <p:cellEditor>

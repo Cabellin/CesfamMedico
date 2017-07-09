@@ -5,11 +5,9 @@
  */
 package services;
 
-import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import pojos.Paciente;
 import pojos.Receta;
 
 /**
@@ -30,4 +28,5 @@ public class RecetaFacade extends AbstractFacade<Receta> implements RecetaFacade
     public RecetaFacade() {
         super(Receta.class);
     }
+    
 }
