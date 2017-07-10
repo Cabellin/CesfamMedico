@@ -44,7 +44,9 @@
                     </p:column>
 
                     <p:column style="width:32px;text-align: center">
-                        <p:commandButton id="agregarReceta" action="#{recetaBean.agregarReceta(p)}" icon="ui-icon-person"/>
+                        <p:commandButton id="datosPaciente" update=":form:pacienteDetail" onclick="PF('pacienteDialog').show();" icon="ui-icon-person">
+                            <f:setPropertyActionListener value="#{p}" target="#{pacienteBean.paciente}" />
+                        </p:commandButton>
                         <p:tooltip for="datosPaciente" value="Ver datos del paciente" position="left"/>
                     </p:column>
 

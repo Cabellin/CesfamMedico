@@ -148,17 +148,14 @@
     </h:body>
     <script type="text/javascript">
 
-        function bloqueo(e)
-        {
-            var tecla = window.event ? window.event.keyCode : e.which;
-            if (tecla == 8)
-                return true;
+        function justNumbers(e)
+            {
+                var keynum = window.event ? window.event.keyCode : e.which;
+                if (keynum == 8)
+                    return true;
 
-            patron = /\w/; // 4
-            te = String.fromCharCode(tecla); // 5
-            return patron.test(te);
-
-        }
+                return /\d/.test(String.fromCharCode(keynum));
+            }
 
     </script>
 

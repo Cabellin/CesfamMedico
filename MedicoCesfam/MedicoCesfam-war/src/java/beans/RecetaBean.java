@@ -137,8 +137,7 @@ public class RecetaBean implements Serializable {
         u.add("Seleccione");
         u.add("Días");
         u.add("Semanas");
-        u.add("Meses");
-        u.add("Años");
+        u.add("Mes");
         return u;
     }
 
@@ -166,11 +165,11 @@ public class RecetaBean implements Serializable {
         return "receta?faces-redirect=true";
     }
 
-    public String cancelar(){
+    public String cancelar() {
         Limpiar();
         return "index?faces-redirect=true";
     }
-    
+
     public String verRecetas(Paciente p) {
         paciente = p;
         return "controlPaciente?faces-redirect=true";
@@ -189,7 +188,6 @@ public class RecetaBean implements Serializable {
     public void onDrop(DragDropEvent ddEvent) {
         Medicamento m = ((Medicamento) ddEvent.getData());
         RecetaMedicamento rm = new RecetaMedicamento(new RecetaMedicamentoPK(m.getCodigo(), BigInteger.valueOf(receta.getId().longValue())), null, null, null, null, null, null, BigInteger.ZERO);
-//        RecetaMedicamento rm = new RecetaMedicamento();
         rm.setMedicamento(m);
         rm.setReceta(receta);
 
@@ -226,6 +224,47 @@ public class RecetaBean implements Serializable {
         }
     }
 
+    private void validarUnidades() throws Exception {
+        for (RecetaMedicamento temp : seleccionados) {
+            if (temp.getUnidadP().equals("Días") && temp.getUnidadE().equals("Días")) {
+                int com = temp.getUnidadP().compareTo(temp.getUnidadE());
+                if (com == 1) {
+                    throw new Exception("La periodicidad no puede ser mayor a la extensión");
+                }
+            }
+        }
+    }
+
+    private void validarMes() throws Exception {
+        for (RecetaMedicamento temp : seleccionados) {
+            if (temp.getUnidadE().equals("Mes")) {
+                if (temp.getExtension().intValue() > 1) {
+                    throw new Exception("La extensión no puede ser mayor a un mes");
+                }
+            }
+        }
+    }
+
+    private void validarSemanas() throws Exception {
+        for (RecetaMedicamento temp : seleccionados) {
+            if (temp.getUnidadE().equals("Semanas")) {
+                if (temp.getExtension().intValue() > 5) {
+                    throw new Exception("La extensión no puede ser mayor a un mes");
+                }
+            }
+        }
+    }
+
+    private void validarDías() throws Exception {
+        for (RecetaMedicamento temp : seleccionados) {
+            if (temp.getUnidadE().equals("Días")) {
+                if (temp.getExtension().intValue() > 31) {
+                    throw new Exception("La extensión no puede ser mayor a un mes");
+                }
+            }
+        }
+    }
+
     public void verificarCantidad() throws Exception {
         for (RecetaMedicamento temp : seleccionados) {
             if (temp.getCantidad() == null || temp.getCantidad().intValue() == 0) {
@@ -256,6 +295,51 @@ public class RecetaBean implements Serializable {
         }
     }
 
+    public void cantidadTotal() {
+        for (RecetaMedicamento temp : seleccionados) {
+            switch (temp.getUnidadP()) {
+                case "Minutos":
+                    if (temp.getUnidadE().equals("Días")) {
+                        temp.setCantTotal(temp.getExtension().multiply(BigInteger.valueOf(1440)));
+                        temp.setCantTotal(temp.getCantTotal().divide(temp.getPeriodicidad()));
+                    } else if (temp.getUnidadE().equals("Semanas")) {
+                        temp.setCantTotal(temp.getExtension().multiply(BigInteger.valueOf(10080)));
+                        temp.setCantTotal(temp.getCantTotal().divide(temp.getPeriodicidad()));
+                    } else if (temp.getUnidadE().equals("Mes")) {
+                        temp.setCantTotal(temp.getExtension().multiply(BigInteger.valueOf(43200)));
+                        temp.setCantTotal(temp.getCantTotal().divide(temp.getPeriodicidad()));
+                    }
+                    break;
+                case "Horas":
+                    if (temp.getUnidadE().equals("Días")) {
+                        temp.setCantTotal(temp.getExtension().multiply(BigInteger.valueOf(24)));
+                        temp.setCantTotal(temp.getCantTotal().divide(temp.getPeriodicidad()));
+                    } else if (temp.getUnidadE().equals("Semanas")) {
+                        temp.setCantTotal(temp.getExtension().multiply(BigInteger.valueOf(168)));
+                        temp.setCantTotal(temp.getCantTotal().divide(temp.getPeriodicidad()));
+                    } else if (temp.getUnidadE().equals("Mes")) {
+                        temp.setCantTotal(temp.getExtension().multiply(BigInteger.valueOf(720)));
+                        temp.setCantTotal(temp.getCantTotal().divide(temp.getPeriodicidad()));
+                    }
+                    break;
+                case "Días":
+                    if (temp.getUnidadE().equals("Días")) {
+                        temp.setCantTotal(temp.getExtension().multiply(BigInteger.valueOf(1)));
+                        temp.setCantTotal(temp.getCantTotal().divide(temp.getPeriodicidad()));
+                    } else if (temp.getUnidadE().equals("Semanas")) {
+                        temp.setCantTotal(temp.getExtension().multiply(BigInteger.valueOf(7)));
+                        temp.setCantTotal(temp.getCantTotal().divide(temp.getPeriodicidad()));
+                    } else if (temp.getUnidadE().equals("Mes")) {
+                        temp.setCantTotal(temp.getExtension().multiply(BigInteger.valueOf(30)));
+                        temp.setCantTotal(temp.getCantTotal().divide(temp.getPeriodicidad()));
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
     public String crearReceta() {
         try {
             verificarMedicamento();
@@ -265,11 +349,16 @@ public class RecetaBean implements Serializable {
             verificarUnidadP();
             verificarExtension();
             verificarUnidadE();
+            validarUnidades();
+            validarMes();
+            validarSemanas();
+            validarDías();
             Receta r = new Receta();
             r.setId(BigDecimal.valueOf(receta.getId().longValue()));
             r.setFecha(new Date());
             r.setHora(new Date());
             r.setEstado("Pendiente");
+            cantidadTotal();
             r.setPacienteRut(pacienteFacade.find(paciente.getRut()));
             r.setUsuarioNomUsu(receta.getUsuarioNomUsu());
             r.setRecetaMedicamentoList(seleccionados);
