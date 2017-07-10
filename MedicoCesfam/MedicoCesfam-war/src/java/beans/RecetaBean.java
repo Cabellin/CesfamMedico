@@ -116,13 +116,13 @@ public class RecetaBean implements Serializable {
     }
 
     public List<Medicamento> getMedicamentosBd() {
-        return medicamentoFacade.findAll();
+        return this.medicamentosBd;
     }
 
     public void setMedicamentosBd(List<Medicamento> medicamentosBd) {
         this.medicamentosBd = medicamentosBd;
     }
-
+    
     public List<String> getUnidadesP() {
         ArrayList<String> u = new ArrayList<String>();
         u.add("Seleccione");
@@ -137,11 +137,7 @@ public class RecetaBean implements Serializable {
         u.add("Seleccione");
         u.add("Días");
         u.add("Semanas");
-<<<<<<< HEAD
         u.add("Mes");
-=======
-        u.add("Meses");
->>>>>>> 309a4ee8f8a8c0ce013433bb81990f5a7d37ebf5
         return u;
     }
 
@@ -192,19 +188,22 @@ public class RecetaBean implements Serializable {
     public void onDrop(DragDropEvent ddEvent) {
         Medicamento m = ((Medicamento) ddEvent.getData());
         RecetaMedicamento rm = new RecetaMedicamento(new RecetaMedicamentoPK(m.getCodigo(), BigInteger.valueOf(receta.getId().longValue())), null, null, null, null, null, null, BigInteger.ZERO);
-<<<<<<< HEAD
-=======
         rm.setEstado("Pendiente");
->>>>>>> 309a4ee8f8a8c0ce013433bb81990f5a7d37ebf5
         rm.setMedicamento(m);
         rm.setReceta(receta);
 
         seleccionados.add(rm);
         medicamentosBd.remove(m);
+        if (filtrado != null && filtrado.contains(m)) {
+            filtrado.remove(m);
+        }
     }
 
     public void quitarMedicamento(RecetaMedicamento rm) {
         medicamentosBd.add(rm.getMedicamento());
+        if (filtrado != null) {
+            filtrado.add(rm.getMedicamento());
+        }        
         seleccionados.remove(rm);
     }
 
@@ -235,7 +234,7 @@ public class RecetaBean implements Serializable {
     private void validarUnidades() throws Exception {
         for (RecetaMedicamento temp : seleccionados) {
             if (temp.getUnidadP().equals("Días") && temp.getUnidadE().equals("Días")) {
-                int com = temp.getUnidadP().compareTo(temp.getUnidadE());
+                int com = temp.getPeriodicidad().compareTo(temp.getExtension());
                 if (com == 1) {
                     throw new Exception("La periodicidad no puede ser mayor a la extensión");
                 }
@@ -263,11 +262,21 @@ public class RecetaBean implements Serializable {
         }
     }
 
-    private void validarDías() throws Exception {
+    private void validarDíasE() throws Exception {
         for (RecetaMedicamento temp : seleccionados) {
             if (temp.getUnidadE().equals("Días")) {
                 if (temp.getExtension().intValue() > 31) {
                     throw new Exception("La extensión no puede ser mayor a un mes");
+                }
+            }
+        }
+    }
+    
+    private void validarDíasP() throws Exception {
+        for (RecetaMedicamento temp : seleccionados) {
+            if (temp.getUnidadP().equals("Días")) {
+                if (temp.getExtension().intValue() > 31) {
+                    throw new Exception("La periodicidad no puede ser mayor a un mes");
                 }
             }
         }
@@ -360,7 +369,8 @@ public class RecetaBean implements Serializable {
             validarUnidades();
             validarMes();
             validarSemanas();
-            validarDías();
+            validarDíasP();
+            validarDíasE();
             Receta r = new Receta();
             r.setId(BigDecimal.valueOf(receta.getId().longValue()));
             r.setFecha(new Date());
@@ -400,5 +410,9 @@ public class RecetaBean implements Serializable {
         } else {
             return "#056A28";
         }
+    }
+    
+    public void cargarMedicamentos(){
+        medicamentosBd = medicamentoFacade.findAll();
     }
 }
