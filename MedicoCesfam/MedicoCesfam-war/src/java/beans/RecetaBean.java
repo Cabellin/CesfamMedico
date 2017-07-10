@@ -137,7 +137,11 @@ public class RecetaBean implements Serializable {
         u.add("Seleccione");
         u.add("Días");
         u.add("Semanas");
+<<<<<<< HEAD
         u.add("Mes");
+=======
+        u.add("Meses");
+>>>>>>> 309a4ee8f8a8c0ce013433bb81990f5a7d37ebf5
         return u;
     }
 
@@ -188,6 +192,10 @@ public class RecetaBean implements Serializable {
     public void onDrop(DragDropEvent ddEvent) {
         Medicamento m = ((Medicamento) ddEvent.getData());
         RecetaMedicamento rm = new RecetaMedicamento(new RecetaMedicamentoPK(m.getCodigo(), BigInteger.valueOf(receta.getId().longValue())), null, null, null, null, null, null, BigInteger.ZERO);
+<<<<<<< HEAD
+=======
+        rm.setEstado("Pendiente");
+>>>>>>> 309a4ee8f8a8c0ce013433bb81990f5a7d37ebf5
         rm.setMedicamento(m);
         rm.setReceta(receta);
 
